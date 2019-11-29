@@ -10,8 +10,8 @@ let cellH = 0.2
 let preOrientation = canvas.width > canvas.height ? 'landscape' : 'portrait'
 
 const bgColor = 'hsl(0,0%,0%)'
-let f = 0.8
-const opacity = 0.9
+let f = 0.5
+const opacity = 1
 const lineWidth = 1
 
 updateCanvasResolution()
@@ -93,8 +93,8 @@ function generatePoints () {
         y: randomPosition(iY, cellH, f),
         distX: randomPosition(iX, cellW, f),
         distY: randomPosition(iY, cellH, f),
-        // color: `rgb(100,100,100,${opacity})`,
-        color: `rgb(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},${opacity})`,
+        // color: `rgb(200,200,200,${opacity})`,
+        color: `rgb(${Math.random() * 200},${Math.random() * 200},${Math.random() * 200},${opacity})`,
         t: 0,
         tStep: makeTimeStep(),
         col: iX,
@@ -138,7 +138,7 @@ function interpolatePoint (p, t) {
 }
 
 function makeTimeStep () {
-  return Math.max(0.2, Math.random()) / 60
+  return Math.max(0.2, Math.random()) / 100
 }
 
 function interpolateTime (t, method) {
