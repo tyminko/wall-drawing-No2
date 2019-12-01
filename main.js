@@ -9,7 +9,7 @@ let cellW = 0.1
 let cellH = 0.2
 let preOrientation = canvas.width > canvas.height ? 'landscape' : 'portrait'
 
-const bgColor = 'hsl(0,0%,0%)'
+const bgColor = 'hsl(30,0%,100%)'
 let f = 0.5
 const opacity = 1
 const lineWidth = 1
@@ -88,53 +88,68 @@ function generatePoints () {
     for (var y = 0; y < 5; y++) {
       const iX = canvas.width > canvas.height ? x : y
       const iY = canvas.width > canvas.height ? y : x
-      var point = {
-        x: randomPosition(iX, cellW, f),
-        y: randomPosition(iY, cellH, f),
-        distX: randomPosition(iX, cellW, f),
-        distY: randomPosition(iY, cellH, f),
-        // color: `rgb(200,200,200,${opacity})`,
-        color: `rgb(${Math.random() * 200},${Math.random() * 200},${Math.random() * 200},${opacity})`,
-        t: 0,
-        tStep: makeTimeStep(),
-        col: iX,
-        row: iY
-      }
+      var point = {}
+      updatePoint(
+        point,
+        randomPosition(iX, cellW, f),
+        randomPosition(iY, cellH, f),
+        iX,
+        iY,
+        `rgb(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},${opacity})`
+      )
       points.push(point)
     }
   }
   return points
 }
 
-function randomPosition (index, cellSize, f) {
-  var random = Math.random() * cellSize * f
-  return cellSize * index + random + (cellSize - cellSize * f) / 2
-}
-
 function getCurrentPoints () {
   const points = []
   for (let i = 0; i < startPoints.length; i++) {
     const sP = startPoints[i]
-    points.push(interpolatePoint(sP, interpolateTime(sP.t, 'easeOutElastic')))
+    points.push(interpolatePoint(sP))
     sP.t += sP.tStep
     if (sP.t > 1) {
-      sP.t = 0
-      sP.x = sP.distX
-      sP.y = sP.distY
-      sP.distX = randomPosition(sP.col, cellW, f)
-      sP.distY = randomPosition(sP.row, cellH, f)
-      sP.tStep = makeTimeStep()
+      updatePoint(sP, sP.distX, sP.distY)
     }
   }
   return points
 }
 
-function interpolatePoint (p, t) {
+/**
+ * @param {Object} p
+ * @param {number} x
+ * @param {number} y
+ * @param {number} [col]
+ * @param {number} [row]
+ * @param {string} [color]
+ */
+function updatePoint (p, x, y, col, row, color) {
+  if (typeof col === 'undefined') col = p.col
+  if (typeof row === 'undefined') row = p.row
+  p.x = typeof x === 'undefined' ? randomPosition(col, cellW, f) : x
+  p.y = typeof y === 'undefined' ? randomPosition(row, cellH, f) : y
+  p.distX = randomPosition(col, cellW, f)
+  p.distY = randomPosition(row, cellH, f)
+  p.t = 0
+  p.tStep = makeTimeStep()
+  p.col = col
+  p.row = row
+  if (color) p.color = color
+}
+
+function interpolatePoint (p) {
+  const t = interpolateTime(p.t, 'easeOutElastic')
   return {
     x: (p.x + (p.distX - p.x) * t) * canvas.width,
     y: (p.y + (p.distY - p.y) * t) * canvas.height,
     color: p.color
   }
+}
+
+function randomPosition (index, cellSize, f) {
+  var random = Math.random() * cellSize * f
+  return cellSize * index + random + (cellSize - cellSize * f) / 2
 }
 
 function makeTimeStep () {
