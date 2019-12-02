@@ -4,32 +4,41 @@
  */
 function Drawing (canvas) {
   const ctx = canvas.getContext('2d', { alpha: false })
-  let cellW = 0.1
-  let cellH = 0.2
   let preOrientation = canvas.width > canvas.height ? 'landscape' : 'portrait'
 
   const bgColor = 'hsl(30,0%,100%)'
-  let f = 0
-  const opacity = 1
   const lineWidth = 1
+  Point.prototype.placementFactor = 0.7
+  Point.prototype.opacity = 1
+
   let play = true
+  let paused = false
 
   /** @type Point[] */ let startPoints
   let currentPoints = []
   updateCanvasResolution()
   startPoints = generatePoints()
+  // shuffle(startPoints)
 
+  canvas.addEventListener('click', togglePlay)
   window.addEventListener('resize', updateCanvasResolution)
   window.addEventListener('keyup', function (e) {
     if (e.code === 'Space' || e.keyCode === 32) togglePlay()
   })
-  canvas.addEventListener('click', togglePlay)
+  window.addEventListener('blur', function () {
+    play = false
+  })
+  window.addEventListener('focus', function () {
+    if (paused || play) return
+    play = true
+    draw()
+  })
 
   function togglePlay () {
     play = !play
+    paused = !play
     if(play) draw()
   }
-
 
   draw()
 
@@ -81,6 +90,7 @@ function Drawing (canvas) {
       const y = currentPoints.length ? currentPoints[i].y / canvas.height : null
       p.updatePosition(x, y)
     })
+    // shuffle(startPoints)
   }
 
   function generatePoints () {
@@ -106,5 +116,9 @@ function Drawing (canvas) {
         color: p.color
       }
     })
+  }
+
+  function shuffle(array) {
+    array.sort(() => Math.random() - 0.5);
   }
 }

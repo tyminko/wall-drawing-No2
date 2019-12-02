@@ -7,11 +7,12 @@ function Point (col, row) {
   this.distY = this.randomPosition(row, this.cellSize.h)
   this.t = 0
   this.tStep = this.makeTimeStep()
-  this.color = `rgb(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},${this.opacity})`
+  // this.color = `hsl(0,0%,20%,${this.opacity})`
+  this.color = `rgb(${Math.random() * 255},${Math.random() * 250},${Math.random() * 255},${this.opacity})`
 }
 
 Point.prototype.cellSize = {w: 0.1, h: 0.2}
-Point.prototype.placementFactor = 0.5
+Point.prototype.placementFactor = 0.7
 Point.prototype.interpolationMethod = 'easeOutElastic'
 Point.prototype.opacity = 1
 
