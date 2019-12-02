@@ -77,8 +77,8 @@ function Drawing (canvas) {
       const col = i % numCols
       if (col === 0) row++
       p.updateAddress(col, row)
-      const x = currentPoints.length ? currentPoints[i].x : null
-      const y = currentPoints.length ? currentPoints[i].y : null
+      const x = currentPoints.length ? currentPoints[i].x / canvas.width : null
+      const y = currentPoints.length ? currentPoints[i].y / canvas.height : null
       p.updatePosition(x, y)
     })
   }
